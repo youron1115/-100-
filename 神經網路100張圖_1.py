@@ -11,10 +11,18 @@ from matplotlib import pyplot as plt
 
 # 建立簡單的線性執行的模型
 model = Sequential()
-# Add Input layer, 隱藏層(hidden layer) 有 256個輸出變數
+# Add Input layer, 隱藏層(hidden layer) 有 256個輸出變數，此處有兩個隱藏層
+"""Dense參數
+units: 輸出矩陣的維數，愈大表示分類更細，擬合度愈高，雖然準確率提高，但也要防止過度擬合(Overfit)
+- activation: 使用的 Activation function，若未設定，即簡化為 y = x * W + b
+- use_bias: 是否使用偏差項(Bias)，若未設定或為 False，即簡化為 y = g(x * W)
+- kernel_initializer: 權重(W)的初始值
+- bias_initializer: 偏差項(Bias)的初始值
+"""
 model.add(Dense(units=256, input_dim=784, kernel_initializer='normal', activation='relu')) 
 # Add output layer
 model.add(Dense(units=10, kernel_initializer='normal', activation='softmax'))
+model.summary()#模型的摘要信息，其中包括每一层的名称、输出形状和参数数量
 
 # 編譯: 選擇損失函數、優化方法及成效衡量方式
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy']) 
@@ -47,9 +55,12 @@ predictions = np.argmax(model.predict(X), axis=-1)
 # get prediction result
 print("預測結果: ",predictions)
 
+"""
 # 顯示 第一筆訓練資料的圖形，確認是否正確
 plt.imshow(X_test[3])
 plt.show() 
+"""
+
 """
 plt.plot(train_history.history['loss'])  
 plt.plot(train_history.history['val_loss'])  
@@ -72,8 +83,9 @@ with open(r"D:\0902\神經網路100張圖\1_模型儲存\model.config", "w") as 
 model.save_weights(r"D:\0902\神經網路100張圖\1_模型儲存\model.weight")
 """
 
-""""""
+"""
 #第二種儲存方式
 #儲存結構與權重，檔案的類別為HDF5
 from keras.models import load_model
 model.save(r"D:\0902\神經網路100張圖\1_模型儲存\model.h5")  # creates a HDF5 file 'model.h5'
+"""
