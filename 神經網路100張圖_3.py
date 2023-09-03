@@ -21,6 +21,7 @@ img_rows, img_cols = 28, 28
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
 # 保留原始資料，供 cross tab function 使用
+
 y_test_org = y_test
 
 # channels_first: 色彩通道(R/G/B)資料(深度)放在第2維度，第3、4維度放置寬與高
@@ -83,19 +84,25 @@ print('Test accuracy:', score[1])
 
 # 計算『混淆矩陣』(Confusion Matrix)，顯示測試集分類的正確及錯認總和數
 import pandas as pd 
-predictions = model.predict_step(x_test) 
-pd.crosstab(y_test_org, predictions, rownames=['實際值'], colnames=['預測值'])
+#predictions = model.predict_classes(x_test) 
+predictions = model.predict_step(x_test)
+"""
+import numpy as np
+predictions=np.argmax(predictions,axis=1)
+"""
+print("混淆矩陣:")
+print(pd.crosstab(y_test_org, predictions, rownames=['實際值'], colnames=['預測值']))
 
-
-# 模型結構存檔
+"""
+# 模型結構存檔(weight存檔有問題)
 from keras.models import model_from_json
 json_string = model.to_json()
 
-with open(r"D:\0902\神經網路100張圖\3_模型儲存\cnn.config", "w") as text_file:
+with open("cnn.config", "w") as text_file:
     text_file.write(json_string)
 
     
 # 模型訓練結果存檔
-model.save_weights(r"D:\0902\神經網路100張圖\3_模型儲存\cnn.weight")
-
+model.save_weights("cnn.weight")
+"""
 
