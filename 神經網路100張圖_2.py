@@ -33,6 +33,7 @@ for i in []:
     X1 = X2.reshape(1,28*28) / 255
     
     predictions = model.predict_step(X1)
+    
     # get prediction result
     print("predictions:",i)
     print(predictions)
