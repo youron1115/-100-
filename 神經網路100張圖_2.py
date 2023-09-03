@@ -25,18 +25,22 @@ from keras.models import load_model
 # 載入模型
 model = load_model(r"D:\0902\神經網路100張圖\1_模型儲存\model.h5")
 """ 
-
-
+from matplotlib import pyplot as plt
 # read my data
-for i in [3,9]:
-    X2 = np.genfromtxt(str(i)+'.csv', delimiter=',').astype('float32')  
+for i in []:
+    dir="D:\\0902\\神經網路100張圖"+"\\"+str(i)+".csv"
+    X2 = np.genfromtxt(dir, delimiter=',').astype('float32')  
     X1 = X2.reshape(1,28*28) / 255
-    predictions = model.predict_classes(X1)
+    
+    predictions = model.predict_step(X1)
     # get prediction result
+    print("predictions:",i)
     print(predictions)
+    
+    
+    plt.imshow(X2.reshape(28,28)*255)
+    plt.show()
 
 """"""
-from matplotlib import pyplot as plt
-plt.imshow(X2.reshape(28,28)*255)
-plt.show() 
+ 
 
