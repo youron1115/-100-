@@ -59,15 +59,21 @@ plt.xlabel('Epoch')
 plt.legend(['loss', 'val_loss'], loc='upper left')  
 plt.show() 
 """
+
+"""
+#第一種儲存方式
 #將結構存到 model.config 檔案，檔案為JSON或YAML格式
 from keras.models import model_from_json
 json_string = model.to_json() 
-with open(r"D:\0902\model.config", "w") as text_file:    
+with open(r"D:\0902\神經網路100張圖\1_模型儲存\model.config", "w") as text_file:    
     text_file.write(json_string)
 
 #將權重存到 model.weight 檔案
-model.save_weights(r"D:\0902\model.weight")
+model.save_weights(r"D:\0902\神經網路100張圖\1_模型儲存\model.weight")
+"""
 
+""""""
+#第二種儲存方式
 #儲存結構與權重，檔案的類別為HDF5
 from keras.models import load_model
-model.save('model.h5')  # creates a HDF5 file 'model.h5'
+model.save(r"D:\0902\神經網路100張圖\1_模型儲存\model.h5")  # creates a HDF5 file 'model.h5'
