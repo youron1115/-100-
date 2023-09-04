@@ -46,14 +46,45 @@ y_test = keras.utils.to_categorical(y_test, num_classes)
 
 # 建立簡單的線性執行的模型
 model = Sequential()
+
 # 建立卷積層，filter=32,即 output space 的深度, Kernal Size: 3x3, activation function 採用 relu
 model.add(Conv2D(32, kernel_size=(3, 3),
                  activation='relu',
-                 input_shape=input_shape))
+                 input_shape=input_shape))#input_shape=(28.28,1)
+#一維(Conv1D)、二維(Conv2D)、三維(Conv3D)，
+# 分別處理時序資料、2D 圖形及每一點含其他資訊的2D 圖形
+
+"""
+W: input 的寬度
+
+F：濾波器數量，濾波器數目，就是下圖(day08)的每一階段的輸出面數或是深度，
+輸出的圖稱為『特徵圖』(Feature Map)，通常是4的倍數
+
+P：補零的策略，卷積層取週邊NxN的滑動視窗時，
+若超越邊界時，是否要放棄這個點、還是一律補零，
+若採後者，P就等於1，反之為0
+
+S：『滑動步長』(Stride)，指滑動視窗時，要一次滑動幾格
+"""
+#output_shape=((W-F+2P)/S)+1=((28-3+2*0)/1)+1=26
+
 # 建立卷積層，filter=64,即 output size, Kernal Size: 3x3, activation function 採用 relu
 model.add(Conv2D(64, (3, 3), activation='relu'))
 # 建立池化層，池化大小=2x2，取最大值
 model.add(MaxPooling2D(pool_size=(2, 2)))
+
+"""
+1.取最大值(Max)：包括一維(MaxPooling1D)、二維(MaxPooling2D)、三維(MaxPooling3D)，
+分別處理時序資料、2D 圖形及每一點含其他資訊的2D 圖形。
+
+2.取平均值(Average)：也包括一維(AveragePooling1D)、二維(AveragePooling2D)、
+三維(AveragePooling3D)。
+
+3.取全局最大值(GlobalMax)：包括一維(GlobalMaxPooling1D)、二維(MaxPooling2D)，
+分別處理時序資料、2D 圖形，不設池化尺寸(Pooling Size)，取全部 input 的最大值。
+"""
+
+
 # Dropout層隨機斷開輸入神經元，用於防止過度擬合，斷開比例:0.25
 model.add(Dropout(0.25))
 # Flatten層把多維的輸入一維化，常用在從卷積層到全連接層的過渡。
@@ -69,7 +100,7 @@ model.add(Dense(num_classes, activation='softmax'))
 model.compile(loss=keras.losses.categorical_crossentropy,
               optimizer=keras.optimizers.Adadelta(),
               metrics=['accuracy'])
-
+model.summary()
 # 進行訓練, 訓練過程會存在 train_history 變數中
 train_history = model.fit(x_train, y_train,
           batch_size=batch_size,
