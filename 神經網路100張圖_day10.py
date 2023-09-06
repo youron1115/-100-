@@ -1,3 +1,4 @@
+#使用前須將終端機的目錄改變到此程式所在的目錄:"D:\0902\神經網路100張圖"
 from keras.applications.vgg16 import VGG16
 from keras.preprocessing import image
 from keras.applications.vgg16 import preprocess_input, decode_predictions
@@ -17,6 +18,7 @@ def main_func(inputNo):
     # 自 images 目錄找出所有 JPEG 檔案    
     y_test=[]#照片名稱
     x_test=[]#包含所有处理过的图像数据
+    
     for img_path in os.listdir("images"):
         #print("img_path=",img_path)
         if img_path.endswith(".jpg"):
