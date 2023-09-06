@@ -24,6 +24,7 @@ img_rows, img_cols = 28, 28
 
 y_test_org = y_test
 
+#?
 # channels_first: 色彩通道(R/G/B)資料(深度)放在第2維度，第3、4維度放置寬與高
 if K.image_data_format() == 'channels_first':
     x_train = x_train.reshape(x_train.shape[0], 1, img_rows, img_cols)
@@ -33,7 +34,9 @@ else: # channels_last: 色彩通道(R/G/B)資料(深度)放在第4維度，第2�
     x_train = x_train.reshape(x_train.shape[0], img_rows, img_cols, 1)
     x_test = x_test.reshape(x_test.shape[0], img_rows, img_cols, 1)
     input_shape = (img_rows, img_cols, 1)
+#?
 
+#以下做正規化
 # 轉換色彩 0~255 資料為 0~1
 x_train = x_train.astype('float32')
 x_test = x_test.astype('float32')
@@ -107,7 +110,11 @@ train_history = model.fit(x_train, y_train,
           epochs=epochs,
           verbose=1,
           validation_data=(x_test, y_test))
-
+"""
+CNN模型可以處理原始的28x28圖像數據，無需將其轉換為平坦的2D數組
+CNN模型可以利用圖像的空間結構信息，因此不需要將圖像展平
+同樣，它也將數據正規化為浮點數型別，以確保計算的精度
+"""
 # 顯示損失函數、訓練成果(分數)
 score = model.evaluate(x_test, y_test, verbose=0)
 print('Test loss:', score[0])
@@ -117,10 +124,7 @@ print('Test accuracy:', score[1])
 import pandas as pd 
 #predictions = model.predict_classes(x_test) 
 predictions = model.predict_step(x_test)
-"""
-import numpy as np
-predictions=np.argmax(predictions,axis=1)
-"""
+
 print("混淆矩陣:")
 print(pd.crosstab(y_test_org, predictions, rownames=['實際值'], colnames=['預測值']))
 

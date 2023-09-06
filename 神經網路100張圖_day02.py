@@ -9,7 +9,7 @@ from matplotlib import pyplot as plt
 (X_train, y_train), (X_test, y_test) = mnist.load_data()
 
 
-# 建立簡單的線性執行的模型
+# 建立簡單的線性執行的模型(從model = Sequential()~model.compile)
 model = Sequential()
 # Add Input layer, 隱藏層(hidden layer) 有 256個輸出變數，此處有兩個隱藏層
 """Dense參數
@@ -33,8 +33,12 @@ y_TestOneHot = np_utils.to_categorical(y_test)
 #print("y_TrainOneHot:")
 print(y_TrainOneHot)
 
-# 將 training 的 input 資料3維(60000,28,28)轉為2維(60000,28*28(input_dim=784))
-#.astype('float32') 將數據類型轉換為浮點數型別
+"""
+該程式使用了簡單的全連接神經網絡（MLP）模型，
+這種模型期望輸入數據是一個平坦的二維數組
+"""
+# 將 training 的 input 資料3維(60000,28,28)轉為2維(60000,28*28(input_dim已設定為784))
+#.astype('float32') 將數據類型轉換為浮點數型別，增加計算精度
 X_train_2D = X_train.reshape(60000, 28*28).astype('float32')  
 X_test_2D = X_test.reshape(10000, 28*28).astype('float32')  
 
