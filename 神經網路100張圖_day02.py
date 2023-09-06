@@ -22,7 +22,7 @@ units: 輸出矩陣的維數，愈大表示分類更細，擬合度愈高，雖�
 model.add(Dense(units=256, input_dim=784, kernel_initializer='normal', activation='relu')) 
 # Add output layer
 model.add(Dense(units=10, kernel_initializer='normal', activation='softmax'))
-model.summary()#模型的摘要信息，其中包括每一层的名称、输出形状和参数数量
+#model.summary()#模型的摘要信息，其中包括每一层的名称、输出形状和参数数量
 
 # 編譯: 選擇損失函數、優化方法及成效衡量方式
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy']) 
@@ -30,13 +30,19 @@ model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accur
 # 將 training 的 label 進行 one-hot encoding，例如數字 7 經過 One-hot encoding 轉換後是 0000001000，即第7個值為 1
 y_TrainOneHot = np_utils.to_categorical(y_train) 
 y_TestOneHot = np_utils.to_categorical(y_test) 
-print("y_TrainOneHot:")
+#print("y_TrainOneHot:")
 print(y_TrainOneHot)
 
-# 將 training 的 input 資料轉為2維
+# 將 training 的 input 資料3維(60000,28,28)轉為2維(60000,28*28(input_dim=784))
+#.astype('float32') 將數據類型轉換為浮點數型別
 X_train_2D = X_train.reshape(60000, 28*28).astype('float32')  
 X_test_2D = X_test.reshape(10000, 28*28).astype('float32')  
 
+"""
+正規化是將數據縮放到一個範圍，通常是 [0, 1] 或 [-1, 1]，幫助模型更好地學習
+在這裡，數據被除以 255，這是因為圖像像素的範圍通常在 0 到 255 之間。
+這樣做可以將像素值縮放到 [0, 1] 的範圍。
+"""
 x_Train_norm = X_train_2D/255
 x_Test_norm = X_test_2D/255
 
@@ -44,13 +50,13 @@ x_Test_norm = X_test_2D/255
 train_history = model.fit(x=x_Train_norm, y=y_TrainOneHot, validation_split=0.2, epochs=10, batch_size=800, verbose=2)  
 
 # 顯示訓練成果(分數)
-scores = model.evaluate(x_Test_norm, y_TestOneHot)  
-print()  
+scores = model.evaluate(x_Test_norm, y_TestOneHot)   
 print("\t[Info] Accuracy of testing data = {:2.1f}%".format(scores[1]*100.0))  
 
-# 預測(prediction)
-X = x_Test_norm[0:10,:]
+# 預測(prediction)，選擇了測試數據中的前 10 個樣本
+X = x_Test_norm[0:15,:]
 
+#predictions = model.predict_classes(X)#原程式
 predictions = np.argmax(model.predict(X), axis=-1)
 # get prediction result
 print("預測結果: ",predictions)
