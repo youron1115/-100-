@@ -9,8 +9,14 @@ import sys
 # 計算相似矩陣
 def cosine_similarity(ratings):
     sim = ratings.dot(ratings.T)
+    """
+    檢查矩陣 sim 的類型是否為NumPy陣列（np.ndarray）
+    如果不是，則將其轉換為NumPy陣列
+    """
+
     if not isinstance(sim, np.ndarray):
         sim = sim.toarray()
+        
     norms = np.array([np.sqrt(np.diagonal(sim))])
     return (sim / norms / norms.T)
     
@@ -40,6 +46,9 @@ def main_func(inputNo):
     #?
     # 萃取特徵
     features = model.predict(x_test)
+    #使用訓練好的模型 model 對測試數據 x_test 進行預測
+    #獲得了模型對每個測試樣本的特徵表示
+    
     
     # 計算相似矩陣
     features_compress = features.reshape(len(y_test),7*7*512)
