@@ -3,7 +3,7 @@ import numpy as np
 from keras.datasets import mnist
 from keras.utils import np_utils
 from keras.models import Sequential
-from keras.layers import SimpleRNN, Activation, Dense
+from keras.layers import LSTM, Activation, Dense
 from keras.optimizers import Adam
 
 # 固定亂數種子，使每次執行產生的亂數都一樣
@@ -20,29 +20,22 @@ y_train = np_utils.to_categorical(y_train, num_classes=10)
 y_test = np_utils.to_categorical(y_test, num_classes=10)
 
 
-"""
-如果使用 Sequential 模型，
-且設定 batch_input_shape 維度，
-表示當批的output作為下一批的樣本初始狀態，
-稱為 stateful RNN。
-要在後續的隱藏層要重置狀態(state)，可呼叫.reset_states()
-"""
 # 建立簡單的線性執行的模型
 model = Sequential()
 # 加 RNN 隱藏層(hidden layer)
-model.add(SimpleRNN(
+model.add(LSTM(
     # 如果後端使用tensorflow，batch_input_shape 的 batch_size 需設為 None.
     # 否則執行 model.evaluate() 會有錯誤產生.
     batch_input_shape=(None, 28, 28), 
     units= 50,
     unroll=True,
 )) 
-#參數 unroll=True 時，表示計算時會先展開結構
-
 # 加 output 層
 model.add(Dense(units=10, kernel_initializer='normal', activation='softmax'))
 
 # 編譯: 選擇損失函數、優化方法及成效衡量方式
+LR = 0.001          # Learning Rate
+adam = Adam(LR)
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy']) 
 
 # 一批訓練多少張圖片
@@ -68,7 +61,6 @@ for step in range(1, 4001):
 
 # 預測(prediction)
 X = X_test[0:10,:]
-
 predictions = model.predict_step(X)
 #predictions = model.predict_classes(X)
 # get prediction result
@@ -79,7 +71,8 @@ from keras.models import model_from_json
 json_string = model.to_json()
 with open("SimpleRNN.config", "w") as text_file:
     text_file.write(json_string)
+
     
 # 模型訓練結果存檔
 model.save_weights("SimpleRNN.weight")
-#通常模型會儲存在"C:\Users\acer"，已移至"D:\0902\神經網路100張圖\day14_模型儲存"
+#通常模型會儲存在"C:\Users\acer"，已移至"D:\0902\神經網路100張圖\day15_模型儲存"
