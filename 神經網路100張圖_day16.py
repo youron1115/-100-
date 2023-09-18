@@ -42,7 +42,8 @@ index2word = {v:k for k, v in word_index.items()}
 X = np.empty(num_recs,dtype=list)
 y = np.zeros(num_recs)
 i=0
-# 讀取訓練資料，將每一單字以 dictionary 儲存
+#前置處理：先找出所有的單字，給予序號，再將每一句訓練資料的單字轉為序號
+#讀取訓練資料，將每一單字以 dictionary 儲存
 with open("D:\\0902\\神經網路100張圖\\Sentiment1_training.txt",'r+', encoding='UTF-8') as f:
     for line in f:
         label, sentence = line.strip().split("\t")
@@ -56,7 +57,10 @@ with open("D:\\0902\\神經網路100張圖\\Sentiment1_training.txt",'r+', encod
         X[i] = seqs
         y[i] = int(label)
         i += 1
-
+"""
+因為 Neural Network 是以矩陣運算為主，必須固定長度，
+所以，訓練前先調整輸入的句子，過長就截掉，過短就補空白
+"""
 # 字句長度不足補空白        
 X = sequence.pad_sequences(X, maxlen=MAX_SENTENCE_LENGTH)
 # 資料劃分訓練組及測試組
@@ -67,6 +71,13 @@ HIDDEN_LAYER_SIZE = 64
 BATCH_SIZE = 32
 NUM_EPOCHS = 10
 model = Sequential()
+
+"""
+『嵌入』層是幫我們輸入的正整數轉為實數域上的向量，
+這是『詞嵌入』(Word Embedding)的技術，
+把一個維數為所有詞的數量的高維空間嵌入到一個維數低得多的連續向量空間中，
+每個單詞或詞組被映射為實數域上的向量
+"""
 # 加『嵌入』層
 model.add(Embedding(vocab_size, EMBEDDING_SIZE,input_length=MAX_SENTENCE_LENGTH))
 # 加『LSTM』層
@@ -92,11 +103,15 @@ for i in range(5):
     print(' {}      {}     {}'.format(int(round(ypred)), int(ylabel), sent))
     
 # 模型存檔
-model.save('Sentiment1.h5')  # creates a HDF5 file 'model.h5'
+#model.save('Sentiment1.h5')  # creates a HDF5 file 'model.h5'
 #通常模型會儲存在"C:\Users\acer"，已移至"D:\0902\神經網路100張圖\day16_模型儲存"
     
 ##### 自己輸入測試
-INPUT_SENTENCES = ['I love it.','It is so boring.', 'I love it althougn it is so boring.']
+INPUT_SENTENCES = ['I love it.',
+                   'It is so boring.', 
+                   'I love it althougn it is so boring.',
+                ]
+
 XX = np.empty(len(INPUT_SENTENCES),dtype=list)
 # 轉換文字為數值
 i=0
